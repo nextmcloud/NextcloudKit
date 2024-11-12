@@ -80,7 +80,7 @@ import SwiftyJSON
 public struct DownloadLimit {
     public var limit: Int?
     public var count: Int?
-    init(limit: Int? = nil, count: Int? = nil) {
+    public init(limit: Int? = nil, count: Int? = nil) {
         self.limit = limit
         self.count = count
     }
