@@ -80,6 +80,10 @@ import SwiftyJSON
 public struct DownloadLimit: Codable {
     public var limit: Int?
     public var count: Int?
+    init(limit: Int? = nil, count: Int? = nil) {
+        self.limit = limit
+        self.count = count
+    }
 }
 
 extension NextcloudKit {
