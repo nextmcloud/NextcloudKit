@@ -602,7 +602,7 @@ extension NextcloudKit {
     ///   - limit: Number of downloads allow for share
     ///   - token: token to update share
     ///   - completion: return true if limit update or return error
-    func setDownloadLimit(deleteLimit: Bool,
+    public func setDownloadLimit(deleteLimit: Bool,
                           limit: String,
                           token: String,
                           options: NKRequestOptions = NKRequestOptions(),
