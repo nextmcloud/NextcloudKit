@@ -77,6 +77,11 @@ import SwiftyJSON
     }
 }
 
+public struct DownloadLimit: Codable {
+    var limit: Int?
+    var count: Int?
+}
+
 extension NextcloudKit {
 
     @objc public func readShares(parameters: NKShareParameter,
@@ -547,6 +552,87 @@ extension NextcloudKit {
 
         return share
     }
+    
+    /// Fetch download limit for share
+    /// - Parameters:
+    ///   - token: token to update share
+    ///   - completion: return download limit or error
+    public func getDownloadLimit(token: String,
+                                 options: NKRequestOptions = NKRequestOptions(),
+                                 taskHandler: @escaping (_ task: URLSessionTask) -> Void = { _ in },
+                                 completion: @escaping (_ downloadLimit: DownloadLimit?, _ error: NKError) -> Void)  {
+        let urlBase = self.nkCommonInstance.urlBase
+        let endPoint = "/ocs/v2.php/apps/files_downloadlimit/\(token)/limit"
+        guard let url = self.nkCommonInstance.createStandardUrl(serverUrl: urlBase, endpoint: endPoint) else {
+            return options.queue.async { completion(nil, .urlError) }
+        }
+
+        let headers = self.nkCommonInstance.getStandardHeaders(options: options)
+        
+        sessionManager.request(url, method: .delete, parameters: nil, encoding: URLEncoding.default, headers: headers, interceptor: nil).validate(statusCode: 200..<300).onURLSessionTaskCreation { task in
+            task.taskDescription = options.taskDescription
+            taskHandler(task)
+        }.response(queue: self.nkCommonInstance.backgroundQueue) { response in
+            if self.nkCommonInstance.levelLog > 0 {
+                debugPrint(response)
+            }
+
+            switch response.result {
+            case .failure(let error):
+                let error = NKError(error: error, afResponse: response, responseData: response.data)
+                options.queue.async { completion(nil, error) }
+            case .success(let data):
+                guard let data else {
+                    options.queue.async { completion(nil, .invalidData) }
+                    return
+                }
+                let downloadLimitParser = DownloadLimitParser()
+                guard let downloadLimit = downloadLimitParser.parse(data) else {
+                    options.queue.async { completion(nil, .invalidData) }
+                    return
+                }
+                options.queue.async { completion(downloadLimit, .success) }
+            }
+        }
+    }
+    
+    /// Set Download limit
+    /// - Parameters:
+    ///   - deleteLimit: Boolean if we want to remove complete limit
+    ///   - limit: Number of downloads allow for share
+    ///   - token: token to update share
+    ///   - completion: return true if limit update or return error
+    func setDownloadLimit(deleteLimit: Bool,
+                          limit: String,
+                          token: String,
+                          options: NKRequestOptions = NKRequestOptions(),
+                          taskHandler: @escaping (_ task: URLSessionTask) -> Void = { _ in },
+                          completion: @escaping (_ success: Bool?, _ error: NKError) -> Void)  {
+        let urlBase = self.nkCommonInstance.urlBase
+        let endPoint = "/ocs/v2.php/apps/files_downloadlimit/\(token)/limit"
+        guard let url = self.nkCommonInstance.createStandardUrl(serverUrl: urlBase, endpoint: endPoint) else {
+            return options.queue.async { completion(nil, .urlError) }
+        }
+
+        let headers = self.nkCommonInstance.getStandardHeaders(options: options)
+        
+        sessionManager.request(url, method: .delete, parameters: nil, encoding: URLEncoding.default, headers: headers, interceptor: nil).validate(statusCode: 200..<300).onURLSessionTaskCreation { task in
+            task.taskDescription = options.taskDescription
+            taskHandler(task)
+        }.response(queue: self.nkCommonInstance.backgroundQueue) { response in
+            if self.nkCommonInstance.levelLog > 0 {
+                debugPrint(response)
+            }
+
+            switch response.result {
+            case .failure(let error):
+                let error = NKError(error: error, afResponse: response, responseData: response.data)
+                options.queue.async { completion(false, error) }
+            case .success:
+                options.queue.async { completion(true, .success) }
+            }
+        }
+    }
 }
 
 @objc public class NKShare: NSObject {
@@ -588,4 +674,40 @@ extension NextcloudKit {
     @objc public var userMessage = ""
     @objc public var userStatus = ""
     @objc public var attributes: String?
+}
+
+
+class DownloadLimitParser: NSObject, XMLParserDelegate {
+    var message = ""
+    var foundCharacters = "";
+    var downloadLimit = DownloadLimit()
+    
+    func parse(_ data: Data) -> DownloadLimit? {
+        let parser = XMLParser(data: data)
+        parser.delegate = self
+        return parser.parse() ? downloadLimit : nil
+    }
+    
+    // MARK:- XML Parser Delegate
+    public func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
+        
+    }
+    public func parser(_ parser: XMLParser, foundCharacters string: String) {
+        self.foundCharacters += string;
+    }
+    
+    public func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+        if elementName == "limit" {
+            let limit =  self.foundCharacters.replacingOccurrences(of: "\n", with: "")
+            self.downloadLimit.limit = Int(limit.trimmingCharacters(in: .whitespaces))
+        }
+        if elementName == "count" {
+            let count =  self.foundCharacters.replacingOccurrences(of: "\n", with: "")
+            self.downloadLimit.count = Int(count.trimmingCharacters(in: .whitespaces))
+        }
+        if elementName == "message"{
+            self.message = self.foundCharacters
+        }
+        self.foundCharacters = ""
+    }
 }
