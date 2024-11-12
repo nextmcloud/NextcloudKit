@@ -681,7 +681,7 @@ extension NextcloudKit {
 }
 
 
-class DownloadLimitParser: NSObject, XMLParserDelegate {
+public class DownloadLimitParser: NSObject, XMLParserDelegate {
     var message = ""
     var foundCharacters = "";
     var downloadLimit = DownloadLimit()
