@@ -683,7 +683,7 @@ extension NextcloudKit {
 
 public class DownloadLimitParser: NSObject, XMLParserDelegate {
     var message = ""
-    var foundCharacters = "";
+    var foundCharacters = ""
     var downloadLimit = DownloadLimit()
     
     func parse(_ data: Data) -> DownloadLimit? {
@@ -692,26 +692,30 @@ public class DownloadLimitParser: NSObject, XMLParserDelegate {
         return parser.parse() ? downloadLimit : nil
     }
     
-    // MARK:- XML Parser Delegate
+    // MARK: - XML Parser Delegate
     public func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
-        
+        // Reset foundCharacters for each new element
+        foundCharacters = ""
     }
+    
     public func parser(_ parser: XMLParser, foundCharacters string: String) {
-        self.foundCharacters += string;
+        // Accumulate found characters
+        foundCharacters += string
     }
     
     public func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+        // Trim and process found characters based on element type
+        let trimmedValue = foundCharacters.trimmingCharacters(in: .whitespacesAndNewlines)
+        
         if elementName == "limit" {
-            let limit =  self.foundCharacters.replacingOccurrences(of: "\n", with: "")
-            self.downloadLimit.limit = Int(limit.trimmingCharacters(in: .whitespaces))
+            downloadLimit.limit = Int(trimmedValue) ?? 0
+        } else if elementName == "count" {
+            downloadLimit.count = Int(trimmedValue) ?? 0
+        } else if elementName == "message" {
+            message = trimmedValue
         }
-        if elementName == "count" {
-            let count =  self.foundCharacters.replacingOccurrences(of: "\n", with: "")
-            self.downloadLimit.count = Int(count.trimmingCharacters(in: .whitespaces))
-        }
-        if elementName == "message"{
-            self.message = self.foundCharacters
-        }
-        self.foundCharacters = ""
+        
+        // Reset foundCharacters after processing
+        foundCharacters = ""
     }
 }
