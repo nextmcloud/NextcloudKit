@@ -619,8 +619,8 @@ extension NextcloudKit {
         }
 
         let headers = self.nkCommonInstance.getStandardHeaders(options: options)
-        
-        sessionManager.request(url, method: .put, parameters: nil, encoding: URLEncoding.default, headers: headers, interceptor: nil).validate(statusCode: 200..<300).onURLSessionTaskCreation { task in
+        let parameters = ["token": token, "limit": limit]
+        sessionManager.request(url, method: deleteLimit ? .delete : .put, parameters: parameters, encoding: URLEncoding.default, headers: headers, interceptor: nil).validate(statusCode: 200..<300).onURLSessionTaskCreation { task in
             task.taskDescription = options.taskDescription
             taskHandler(task)
         }.response(queue: self.nkCommonInstance.backgroundQueue) { response in
