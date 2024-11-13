@@ -591,10 +591,7 @@ extension NextcloudKit {
                     return
                 }
                 let downloadLimitParser = DownloadLimitParser()
-                guard let downloadLimit = downloadLimitParser.parse(data) else {
-                    options.queue.async { completion(nil, .invalidData) }
-                    return
-                }
+                let downloadLimit = downloadLimitParser.parse(data: data)
                 options.queue.async { completion(downloadLimit, .success) }
             }
         }
@@ -681,30 +678,31 @@ extension NextcloudKit {
 }
 
 
-public class DownloadLimitParser: NSObject, XMLParserDelegate {
+// XML Parser class
+class DownloadLimitParser: NSObject, XMLParserDelegate {
     var message = ""
     var foundCharacters = ""
     var downloadLimit = DownloadLimit()
     
-    func parse(_ data: Data) -> DownloadLimit? {
+    // Method to start parsing
+    func parse(data: Data) -> DownloadLimit {
         let parser = XMLParser(data: data)
         parser.delegate = self
-        return parser.parse() ? downloadLimit : nil
+        parser.parse()
+        return downloadLimit
     }
     
-    // MARK: - XML Parser Delegate
-    public func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
-        // Reset foundCharacters for each new element
+    // MARK: - XMLParserDelegate Methods
+    
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
         foundCharacters = ""
     }
     
-    public func parser(_ parser: XMLParser, foundCharacters string: String) {
-        // Accumulate found characters
+    func parser(_ parser: XMLParser, foundCharacters string: String) {
         foundCharacters += string
     }
     
-    public func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
-        // Trim and process found characters based on element type
+    func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         let trimmedValue = foundCharacters.trimmingCharacters(in: .whitespacesAndNewlines)
         
         if elementName == "limit" {
@@ -717,5 +715,13 @@ public class DownloadLimitParser: NSObject, XMLParserDelegate {
         
         // Reset foundCharacters after processing
         foundCharacters = ""
+    }
+    
+    func parserDidEndDocument(_ parser: XMLParser) {
+        print("Parsing completed!")
+    }
+    
+    func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
+        print("Parsing error: \(parseError.localizedDescription)")
     }
 }
