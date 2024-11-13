@@ -566,7 +566,7 @@ extension NextcloudKit {
                                  taskHandler: @escaping (_ task: URLSessionTask) -> Void = { _ in },
                                  completion: @escaping (_ downloadLimit: DownloadLimit?, _ error: NKError) -> Void)  {
         let urlBase = self.nkCommonInstance.urlBase
-        let endPoint = "/ocs/v2.php/apps/files_downloadlimit/\(token)/limit"
+        let endPoint = "ocs/v2.php/apps/files_downloadlimit/\(token)/limit"
         guard let url = self.nkCommonInstance.createStandardUrl(serverUrl: urlBase, endpoint: endPoint) else {
             return options.queue.async { completion(nil, .urlError) }
         }
@@ -613,7 +613,7 @@ extension NextcloudKit {
                           taskHandler: @escaping (_ task: URLSessionTask) -> Void = { _ in },
                           completion: @escaping (_ success: Bool?, _ error: NKError) -> Void)  {
         let urlBase = self.nkCommonInstance.urlBase
-        let endPoint = "/ocs/v2.php/apps/files_downloadlimit/\(token)/limit"
+        let endPoint = "ocs/v2.php/apps/files_downloadlimit/\(token)/limit"
         guard let url = self.nkCommonInstance.createStandardUrl(serverUrl: urlBase, endpoint: endPoint) else {
             return options.queue.async { completion(nil, .urlError) }
         }
