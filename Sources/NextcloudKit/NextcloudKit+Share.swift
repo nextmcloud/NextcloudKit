@@ -564,7 +564,7 @@ extension NextcloudKit {
     public func getDownloadLimit(token: String,
                                  options: NKRequestOptions = NKRequestOptions(),
                                  taskHandler: @escaping (_ task: URLSessionTask) -> Void = { _ in },
-                                 completion: @escaping (_ data: Data?, _ error: NKError) -> Void)  {
+                                 completion: @escaping (_ downloadLimit: DownloadLimit?, _ error: NKError) -> Void)  {
         let urlBase = self.nkCommonInstance.urlBase
         let endPoint = "ocs/v2.php/apps/files_downloadlimit/\(token)/limit"
         guard let url = self.nkCommonInstance.createStandardUrl(serverUrl: urlBase, endpoint: endPoint) else {
@@ -585,14 +585,14 @@ extension NextcloudKit {
             case .failure(let error):
                 let error = NKError(error: error, afResponse: response, responseData: response.data)
                 options.queue.async { completion(nil, error) }
-            case .success(let data):
-                guard let data else {
+            case .success:
+                guard let data = response.data else {
                     options.queue.async { completion(nil, .invalidData) }
                     return
                 }
-//                let downloadLimitParser = DownloadLimitParser()
-//                let downloadLimit = downloadLimitParser.parse(data: data)
-                options.queue.async { completion(data, .success) }
+                let downloadLimitParser = DownloadLimitParser()
+                let downloadLimit = downloadLimitParser.parse(data: data)
+                options.queue.async { completion(downloadLimit, .success) }
             }
         }
     }
