@@ -29,7 +29,7 @@ public protocol NextcloudKitDelegate {
     func request<Value>(_ request: DataRequest, didParseResponse response: AFDataResponse<Value>)
 }
 
-public class NKCommon: NSObject {
+@objc public class NKCommon: NSObject {
     public var nksessions = ThreadSafeArray<NKSession>()
     public var delegate: NextcloudKitDelegate?
 
