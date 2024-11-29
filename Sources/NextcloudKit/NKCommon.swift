@@ -96,10 +96,10 @@ public class NKCommon: NSObject {
     internal var filePropertiesCache = NSCache<CFString, NKFileProperty>()
     internal var internalTypeIdentifiers = ThreadSafeArray<UTTypeConformsToServer>()
 
-    public var filenamePathLog: String = ""
-    public var levelLog: Int = 0
-    public var copyLogToDocumentDirectory: Bool = false
-    public var printLog: Bool = true
+    @objc public var filenamePathLog: String = ""
+    @objc public var levelLog: Int = 0
+    @objc public var copyLogToDocumentDirectory: Bool = false
+    @objc public var printLog: Bool = true
 
     private var internalFilenameLog: String = "communication.log"
     public var filenameLog: String {
@@ -115,7 +115,7 @@ public class NKCommon: NSObject {
     }
 
     private var internalPathLog: String = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
-    public var pathLog: String {
+    @objc public var pathLog: String {
         get {
             return internalPathLog
         }
@@ -145,7 +145,7 @@ public class NKCommon: NSObject {
         internalTypeIdentifiers = internalTypeIdentifiers.filter({ $0.account != account })
     }
 
-    public func addInternalTypeIdentifier(typeIdentifier: String, classFile: String, editor: String, iconName: String, name: String, account: String) {
+    @objc public func addInternalTypeIdentifier(typeIdentifier: String, classFile: String, editor: String, iconName: String, name: String, account: String) {
         if !internalTypeIdentifiers.contains(where: { $0.typeIdentifier == typeIdentifier && $0.editor == editor && $0.account == account}) {
             let newUTI = UTTypeConformsToServer(typeIdentifier: typeIdentifier, classFile: classFile, editor: editor, iconName: iconName, name: name, account: account)
             internalTypeIdentifiers.append(newUTI)
@@ -501,7 +501,7 @@ public class NKCommon: NSObject {
 
     // MARK: - Log
 
-    public func clearFileLog() {
+    @objc public func clearFileLog() {
         FileManager.default.createFile(atPath: filenamePathLog, contents: nil, attributes: nil)
         if copyLogToDocumentDirectory, let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first {
             let filenameCopyToDocumentDirectory = path + "/" + filenameLog
@@ -510,7 +510,7 @@ public class NKCommon: NSObject {
         }
     }
 
-    public func writeLog(_ text: String?) {
+    @objc public func writeLog(_ text: String?) {
         guard let text = text else { return }
         guard let date = self.convertDate(Date(), format: "yyyy-MM-dd' 'HH:mm:ss") else { return }
         let textToWrite = "\(date) " + text + "\n"
