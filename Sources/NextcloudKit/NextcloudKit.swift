@@ -10,23 +10,24 @@ import UIKit
 import Alamofire
 import SwiftyJSON
 
-open class NextcloudKit {
-    public static let shared: NextcloudKit = {
+@objc open class NextcloudKit: NSObject {
+    @objc public static let shared: NextcloudKit = {
         let instance = NextcloudKit()
         return instance
     }()
 #if !os(watchOS)
     private let reachabilityManager = Alamofire.NetworkReachabilityManager()
 #endif
-    public let nkCommonInstance = NKCommon()
+    @objc public let nkCommonInstance = NKCommon()
     internal lazy var internalSession: Alamofire.Session = {
         return Alamofire.Session(configuration: URLSessionConfiguration.af.default,
                                  delegate: NextcloudKitSessionDelegate(nkCommonInstance: nkCommonInstance),
                                  eventMonitors: [NKLogger(nkCommonInstance: self.nkCommonInstance)])
     }()
 
-    init() {
+    override init() {
 #if !os(watchOS)
+        super.init()
         startNetworkReachabilityObserver()
 #endif
     }
