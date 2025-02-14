@@ -60,7 +60,7 @@ public extension NextcloudKit {
         if let optionsVesion = options.version {
             version = optionsVesion
         }
-        let endpoint = "ocs/v1.php/apps/end_to_end_encryption/api/\(version)/lock/\(fileId)"
+        let endpoint = "ocs/v2.php/apps/end_to_end_encryption/api/\(version)/lock/\(fileId)"
         guard let nkSession = nkCommonInstance.getSession(account: account),
               let url = nkCommonInstance.createStandardUrl(serverUrl: nkSession.urlBase, endpoint: endpoint, options: options),
               var headers = nkCommonInstance.getStandardHeaders(account: account, options: options) else {
@@ -111,7 +111,7 @@ public extension NextcloudKit {
         if let optionsVesion = options.version {
             version = optionsVesion
         }
-        let endpoint = "ocs/v1.php/apps/end_to_end_encryption/api/\(version)/meta-data/\(fileId)"
+        let endpoint = "ocs/v2.php/apps/end_to_end_encryption/api/\(version)/meta-data/\(fileId)"
         guard let nkSession = nkCommonInstance.getSession(account: account),
               let url = nkCommonInstance.createStandardUrl(serverUrl: nkSession.urlBase, endpoint: endpoint, options: options),
               let headers = nkCommonInstance.getStandardHeaders(account: account, options: options) else {
@@ -160,7 +160,7 @@ public extension NextcloudKit {
         if let optionsVesion = options.version {
             version = optionsVesion
         }
-        let endpoint = "ocs/v1.php/apps/end_to_end_encryption/api/\(version)/meta-data/\(fileId)"
+        let endpoint = "ocs/v2.php/apps/end_to_end_encryption/api/\(version)/meta-data/\(fileId)"
         guard let nkSession = nkCommonInstance.getSession(account: account),
               let url = nkCommonInstance.createStandardUrl(serverUrl: nkSession.urlBase, endpoint: endpoint, options: options),
               var headers = nkCommonInstance.getStandardHeaders(account: account, options: options) else {
