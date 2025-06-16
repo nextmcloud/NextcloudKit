@@ -6,7 +6,7 @@ import Foundation
 
 // Defines the severity level of a log message.
 // Defines the level of log verbosity.
-public enum NKLogLevel: Int, CaseIterable, Identifiable, Comparable {
+@objc public enum NKLogLevel: Int, CaseIterable, Identifiable, Comparable {
     // Logging is disabled.
     case disabled = 0
 
@@ -75,9 +75,9 @@ public final class NKLogFileManager {
 
     // MARK: - Configuration
 
-    private let logFileName = "log.txt"
-    private let logDirectory: URL
-    public var logLevel: NKLogLevel
+    @objc public let logFileName = "log.txt"
+    @objc public let logDirectory: URL
+    @objc public var logLevel: NKLogLevel
     private var currentLogDate: String
     private let logQueue = DispatchQueue(label: "LogWriterQueue", attributes: .concurrent)
     private let rotationQueue = DispatchQueue(label: "LogRotationQueue")
