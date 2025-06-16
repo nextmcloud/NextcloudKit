@@ -46,7 +46,8 @@ public extension NextcloudKitDelegate {
     func uploadComplete(fileName: String, serverUrl: String, ocId: String?, etag: String?, date: Date?, size: Int64, task: URLSessionTask, error: NKError) { }
 }
 
-public struct NKCommon: Sendable {
+@objc public class NKCommon: NSObject, Sendable {
+//public struct NKCommon: Sendable {
     public var nksessions = ThreadSafeArray<NKSession>()
     public var delegate: NextcloudKitDelegate?
     public var groupIdentifier: String?
@@ -130,24 +131,24 @@ public struct NKCommon: Sendable {
 
     // MARK: - Init
 
-    init() {
+    override init() {
 
     }
 
     // MARK: - Type Identifier
 
-    mutating public func clearInternalTypeIdentifier(account: String) {
+    public func clearInternalTypeIdentifier(account: String) {
         internalTypeIdentifiers = internalTypeIdentifiers.filter({ $0.account != account })
     }
 
-    mutating public func addInternalTypeIdentifier(typeIdentifier: String, classFile: String, editor: String, iconName: String, name: String, account: String) {
+    public func addInternalTypeIdentifier(typeIdentifier: String, classFile: String, editor: String, iconName: String, name: String, account: String) {
         if !internalTypeIdentifiers.contains(where: { $0.typeIdentifier == typeIdentifier && $0.editor == editor && $0.account == account}) {
             let newUTI = UTTypeConformsToServer(typeIdentifier: typeIdentifier, classFile: classFile, editor: editor, iconName: iconName, name: name, account: account)
             internalTypeIdentifiers.append(newUTI)
         }
     }
 
-    mutating public func getInternalType(fileName: String, mimeType: String, directory: Bool, account: String) -> (mimeType: String, classFile: String, iconName: String, typeIdentifier: String, fileNameWithoutExt: String, ext: String) {
+    public func getInternalType(fileName: String, mimeType: String, directory: Bool, account: String) -> (mimeType: String, classFile: String, iconName: String, typeIdentifier: String, fileNameWithoutExt: String, ext: String) {
         var ext = (fileName as NSString).pathExtension.lowercased()
         var mimeType = mimeType
         var classFile = "", iconName = "", typeIdentifier = "", fileNameWithoutExt = ""
