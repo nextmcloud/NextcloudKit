@@ -110,35 +110,35 @@ public enum NKLogTagEmoji: String {
 
     // MARK: - Public API
 
-    public func writeLog(debug message: String) {
+    @objc public func writeLog(debug message: String) {
         writeLog("[DEBUG] \(message)")
     }
 
-    public func writeLog(info message: String) {
+    @objc public func writeLog(info message: String) {
         writeLog("[INFO] \(message)")
     }
 
-    public func writeLog(warning message: String) {
+    @objc public func writeLog(warning message: String) {
         writeLog("[WARNING] \(message)")
     }
 
-    public func writeLog(error message: String) {
+    @objc public func writeLog(error message: String) {
         writeLog("[ERROR] \(message)")
     }
 
-    public func writeLog(success message: String) {
+    @objc public func writeLog(success message: String) {
         writeLog("[SUCCESS] \(message)")
     }
 
-    public func writeLog(network message: String) {
+    @objc public func writeLog(network message: String) {
         writeLog("[NETWORK] \(message)")
     }
 
-    public func writeLog(start message: String) {
+    @objc public func writeLog(start message: String) {
         writeLog("[START] \(message)")
     }
 
-    public func writeLog(stop message: String) {
+    @objc public func writeLog(stop message: String) {
         writeLog("[STOP] \(message)")
     }
 
@@ -341,4 +341,20 @@ public enum NKLogTagEmoji: String {
     private static func localizedTimestampString() -> String {
         return cachedLocalizedTimestampFormatter.string(from: Date())
     }
+    
+    @objc public func clearLogFiles() {
+        do {
+            let fileManager = FileManager.default
+            let logFiles = try fileManager.contentsOfDirectory(at: logDirectory, includingPropertiesForKeys: nil, options: [])
+
+            for fileURL in logFiles {
+                fileManager.createFile(atPath: fileURL.path, contents: nil, attributes: nil)
+            }
+
+            print("All log files emptied in \(logDirectory.path)")
+        } catch {
+            print("Failed to clear log files: \(error.localizedDescription)")
+        }
+    }
+
  }
