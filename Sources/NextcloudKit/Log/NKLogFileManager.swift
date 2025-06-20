@@ -6,7 +6,7 @@ import Foundation
 
 // Defines the severity level of a log message.
 // Defines the level of log verbosity.
-public enum NKLogLevel: Int, CaseIterable, Identifiable, Comparable {
+@objc public enum NKLogLevel: Int, CaseIterable, Identifiable, Comparable {
     // Logging is disabled.
     case disabled = 0
 
@@ -53,35 +53,35 @@ public enum NKLogTagEmoji: String {
 /// A logger that writes log messages to a file in a subdirectory of the user's Documents folder,
 /// rotates the log daily
 /// Compatible with iOS 13.0+ and Swift 6.
-public final class NKLogFileManager {
+@objc public final class NKLogFileManager: NSObject {
 
     // MARK: - Singleton
 
     /// Shared singleton instance of the log manager.
-    public static let shared = NKLogFileManager()
+    @objc public static let shared = NKLogFileManager()
 
     /// Configures the shared logger instance.
     /// - Parameters:
     ///   - minLevel: The minimum log level to be recorded.
 
-    public static func configure(logLevel: NKLogLevel = .normal) {
+    @objc public static func configure(logLevel: NKLogLevel = .normal) {
         shared.setConfiguration(logLevel: logLevel)
     }
 
     /// Returns the file URL of the currently active log file.
-    public func currentLogFileURL() -> URL {
+    @objc public func currentLogFileURL() -> URL {
         return logDirectory.appendingPathComponent(logFileName)
     }
 
     // MARK: - Configuration
 
-    private let logFileName = "log.txt"
-    private let logDirectory: URL
-    public var logLevel: NKLogLevel
-    private var currentLogDate: String
-    private let logQueue = DispatchQueue(label: "LogWriterQueue", attributes: .concurrent)
-    private let rotationQueue = DispatchQueue(label: "LogRotationQueue")
-    private let fileManager = FileManager.default
+    @objc public let logFileName = "log.txt"
+    @objc public let logDirectory: URL
+    @objc public var logLevel: NKLogLevel
+    @objc public var currentLogDate: String
+    @objc public let logQueue = DispatchQueue(label: "LogWriterQueue", attributes: .concurrent)
+    @objc public let rotationQueue = DispatchQueue(label: "LogRotationQueue")
+    @objc public let fileManager = FileManager.default
 
     // Cache for dynamic format strings, populated at runtime. Thread-safe via serial queue.
     private static var cachedDynamicFormatters: [String: DateFormatter] = [:]
@@ -89,7 +89,7 @@ public final class NKLogFileManager {
 
     // MARK: - Initialization
 
-    private init(logLevel: NKLogLevel = .normal) {
+    @objc public init(logLevel: NKLogLevel = .normal) {
         self.logLevel = logLevel
 
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -104,7 +104,7 @@ public final class NKLogFileManager {
     /// Sets configuration parameters for the logger.
     /// - Parameters:
     ///   - logLevel: The NKLogLevel { disabled .. verbose }
-    private func setConfiguration(logLevel: NKLogLevel) {
+    @objc public func setConfiguration(logLevel: NKLogLevel) {
         self.logLevel = logLevel
     }
 
