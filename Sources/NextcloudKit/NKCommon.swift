@@ -129,13 +129,13 @@ public extension NextcloudKitDelegate {
 #endif
     internal var internalTypeIdentifiers = ThreadSafeArray<UTTypeConformsToServer>()
 
-    public var filenamePathLog: String = ""
-    public var levelLog: Int = 0
+    @objc public var filenamePathLog: String = ""
+    @objc public var levelLog: Int = 0
     public var copyLogToDocumentDirectory: Bool = false
     public var printLog: Bool = true
 
     private var internalFilenameLog: String = "communication.log"
-    public var filenameLog: String {
+    @objc public var filenameLog: String {
         get {
             return internalFilenameLog
         }
@@ -148,7 +148,7 @@ public extension NextcloudKitDelegate {
     }
 
     private var internalPathLog: String = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
-    public var pathLog: String {
+    @objc public var pathLog: String {
         get {
             return internalPathLog
         }
@@ -621,7 +621,7 @@ public extension NextcloudKitDelegate {
 
     // MARK: - Log
 
-    public func clearFileLog() {
+    @objc public func clearFileLog() {
         FileManager.default.createFile(atPath: filenamePathLog, contents: nil, attributes: nil)
         if copyLogToDocumentDirectory, let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first {
             let filenameCopyToDocumentDirectory = path + "/" + filenameLog
@@ -633,28 +633,28 @@ public extension NextcloudKitDelegate {
     ///
     /// Write a message with an "[DEBUG] " prefix to the log.
     ///
-    public func writeLog(debug message: String) {
+    @objc public func writeLog(debug message: String) {
         writeLog("[DEBUG] \(message)")
     }
 
     ///
     /// Write a message with an "[INFO] " prefix to the log.
     ///
-    public func writeLog(info message: String) {
+    @objc public func writeLog(info message: String) {
         writeLog("[INFO] \(message)")
     }
 
     ///
     /// Write a message with an "[WARNING] " prefix to the log.
     ///
-    public func writeLog(warning message: String) {
+    @objc public func writeLog(warning message: String) {
         writeLog("[WARNING] \(message)")
     }
 
     ///
     /// Write a message with an "[ERROR] " prefix to the log.
     ///
-    public func writeLog(error message: String) {
+    @objc public func writeLog(error message: String) {
         writeLog("[ERROR] \(message)")
     }
 
@@ -663,7 +663,7 @@ public extension NextcloudKitDelegate {
     ///
     /// Does not write anything, should `text` be `nil`.
     ///
-    public func writeLog(_ text: String?) {
+    @objc public func writeLog(_ text: String?) {
         guard let text = text else {
             return
         }
