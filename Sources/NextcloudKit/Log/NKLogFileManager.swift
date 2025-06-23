@@ -76,7 +76,7 @@ public enum NKLogTagEmoji: String {
     // MARK: - Configuration
 
     @objc public let logFileName = "log.txt"
-    @objc public let logDirectory: URL
+    @objc public var logDirectory: URL
     @objc public var logLevel: NKLogLevel
     @objc public var currentLogDate: String
     @objc public let logQueue = DispatchQueue(label: "LogWriterQueue", attributes: .concurrent)
