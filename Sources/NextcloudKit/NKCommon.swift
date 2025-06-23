@@ -46,19 +46,20 @@ public extension NextcloudKitDelegate {
     func uploadComplete(fileName: String, serverUrl: String, ocId: String?, etag: String?, date: Date?, size: Int64, task: URLSessionTask, error: NKError) { }
 }
 
-public struct NKCommon: Sendable {
+//public struct NKCommon: Sendable {
+@objc public class NKCommon: NSObject, Sendable {
     public var nksessions = ThreadSafeArray<NKSession>()
     public var delegate: NextcloudKitDelegate?
     public var groupIdentifier: String?
 
     // Foreground
-    public let identifierSessionDownload: String = "com.nextcloud.nextcloudkit.session.download"
-    public let identifierSessionUpload: String = "com.nextcloud.nextcloudkit.session.upload"
+    @objc public let identifierSessionDownload: String = "com.nextcloud.nextcloudkit.session.download"
+    @objc public let identifierSessionUpload: String = "com.nextcloud.nextcloudkit.session.upload"
     // Background
-    public let identifierSessionDownloadBackground: String = "com.nextcloud.session.downloadbackground"
-    public let identifierSessionUploadBackground: String = "com.nextcloud.session.uploadbackground"
-    public let identifierSessionUploadBackgroundWWan: String = "com.nextcloud.session.uploadbackgroundWWan"
-    public let identifierSessionUploadBackgroundExt: String = "com.nextcloud.session.uploadextension"
+    @objc public let identifierSessionDownloadBackground: String = "com.nextcloud.session.downloadbackground"
+    @objc public let identifierSessionUploadBackground: String = "com.nextcloud.session.uploadbackground"
+    @objc public let identifierSessionUploadBackgroundWWan: String = "com.nextcloud.session.uploadbackgroundWWan"
+    @objc public let identifierSessionUploadBackgroundExt: String = "com.nextcloud.session.uploadextension"
 
     public let rootQueue = DispatchQueue(label: "com.nextcloud.session.rootQueue")
     public let requestQueue = DispatchQueue(label: "com.nextcloud.session.requestQueue")
@@ -74,7 +75,7 @@ public struct NKCommon: Sendable {
     public let groupDefaultsUnavailable = "Unavailable"
     public let groupDefaultsToS = "ToS"
 
-    public enum TypeReachability: Int {
+    @objc public enum TypeReachability: Int {
         case unknown = 0
         case notReachable = 1
         case reachableEthernetOrWiFi = 2
@@ -165,24 +166,24 @@ public struct NKCommon: Sendable {
 
     // MARK: - Init
 
-    init() {
+    override init() {
         filenamePathLog = internalPathLog + "/" + internalFilenameLog
     }
 
     // MARK: - Type Identifier
 
-    mutating public func clearInternalTypeIdentifier(account: String) {
+    public func clearInternalTypeIdentifier(account: String) {
         internalTypeIdentifiers = internalTypeIdentifiers.filter({ $0.account != account })
     }
 
-    mutating public func addInternalTypeIdentifier(typeIdentifier: String, classFile: String, editor: String, iconName: String, name: String, account: String) {
+    public func addInternalTypeIdentifier(typeIdentifier: String, classFile: String, editor: String, iconName: String, name: String, account: String) {
         if !internalTypeIdentifiers.contains(where: { $0.typeIdentifier == typeIdentifier && $0.editor == editor && $0.account == account}) {
             let newUTI = UTTypeConformsToServer(typeIdentifier: typeIdentifier, classFile: classFile, editor: editor, iconName: iconName, name: name, account: account)
             internalTypeIdentifiers.append(newUTI)
         }
     }
 
-    mutating public func getInternalType(fileName: String, mimeType: String, directory: Bool, account: String) -> (mimeType: String, classFile: String, iconName: String, typeIdentifier: String, fileNameWithoutExt: String, ext: String) {
+    public func getInternalType(fileName: String, mimeType: String, directory: Bool, account: String) -> (mimeType: String, classFile: String, iconName: String, typeIdentifier: String, fileNameWithoutExt: String, ext: String) {
         var ext = (fileName as NSString).pathExtension.lowercased()
         var mimeType = mimeType
         var classFile = "", iconName = "", typeIdentifier = "", fileNameWithoutExt = ""
