@@ -14,9 +14,9 @@ public class NKShareParameter: NSObject {
     let sharedWithMe: Bool
     internal var endpoint: String {
         guard idShare > 0 else {
-             return "ocs/v2.php/apps/files_sharing/api/v1/shares"
+             return "ocs/v2.php/apps/files_sharing/shares"
         }
-        return "ocs/v2.php/apps/files_sharing/api/v1/shares/\(idShare)"
+        return "ocs/v2.php/apps/files_sharing/shares/\(idShare)"
     }
     internal var queryParameters: [String: String] {
         var parameters = [
@@ -270,7 +270,7 @@ public extension NextcloudKit {
                              options: NKRequestOptions = NKRequestOptions(),
                              taskHandler: @escaping (_ task: URLSessionTask) -> Void = { _ in },
                              completion: @escaping (_ account: String, _ share: NKShare?, _ responseData: AFDataResponse<Data>?, _ error: NKError) -> Void) {
-        let endpoint = "ocs/v2.php/apps/files_sharing/api/v1/shares"
+        let endpoint = "ocs/v2.php/apps/files_sharing/shares"
         guard let nkSession = nkCommonInstance.getSession(account: account),
               let url = nkCommonInstance.createStandardUrl(serverUrl: nkSession.urlBase, endpoint: endpoint, options: options),
               let headers = nkCommonInstance.getStandardHeaders(account: account, options: options) else {
@@ -356,7 +356,7 @@ public extension NextcloudKit {
                      options: NKRequestOptions = NKRequestOptions(),
                      taskHandler: @escaping (_ task: URLSessionTask) -> Void = { _ in },
                      completion: @escaping (_ account: String, _ share: NKShare?, _ responseData: AFDataResponse<Data>?, _ error: NKError) -> Void) {
-        let endpoint = "ocs/v2.php/apps/files_sharing/api/v1/shares/\(idShare)"
+        let endpoint = "ocs/v2.php/apps/files_sharing/shares/\(idShare)"
         guard let nkSession = nkCommonInstance.getSession(account: account),
               let url = nkCommonInstance.createStandardUrl(serverUrl: nkSession.urlBase, endpoint: endpoint, options: options),
               let headers = nkCommonInstance.getStandardHeaders(account: account, options: options) else {
@@ -418,7 +418,7 @@ public extension NextcloudKit {
                      options: NKRequestOptions = NKRequestOptions(),
                      taskHandler: @escaping (_ task: URLSessionTask) -> Void = { _ in },
                      completion: @escaping (_ account: String, _ responseData: AFDataResponse<Data?>?, _ error: NKError) -> Void) {
-        let endpoint = "ocs/v2.php/apps/files_sharing/api/v1/shares/\(idShare)"
+        let endpoint = "ocs/v2.php/apps/files_sharing/shares/\(idShare)"
         guard let nkSession = nkCommonInstance.getSession(account: account),
               let url = nkCommonInstance.createStandardUrl(serverUrl: nkSession.urlBase, endpoint: endpoint, options: options),
               let headers = nkCommonInstance.getStandardHeaders(account: account, options: options) else {
