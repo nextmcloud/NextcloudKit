@@ -8,8 +8,8 @@ import SwiftyJSON
 
 public extension NextcloudKit {
     private func makeEndpoint(with token: String) -> String {
-//        "ocs/v2.php/apps/files_downloadlimit/api/v1/\(token)/limit"
-        "ocs/v2.php/apps/files_downloadlimit/\(token)/limit"
+        "ocs/v2.php/apps/files_downloadlimit/api/v1/\(token)/limit"
+//        "ocs/v2.php/apps/files_downloadlimit/\(token)/limit"
     }
 
     func getDownloadLimit(account: String, token: String, completion: @escaping (NKDownloadLimit?, NKError) -> Void) {
