@@ -365,16 +365,16 @@ public extension NextcloudKit {
         var parameters = [
             "permissions": String(permissions)
         ]
-        if let password, !password.isEmpty {
+        if let password {//}, !password.isEmpty {
             parameters["password"] = password
         }
-        if let expireDate, !expireDate.isEmpty {
+        if let expireDate {//, !expireDate.isEmpty {
             parameters["expireDate"] = expireDate
         }
-        if let note, !note.isEmpty {
+        if let note {//, !note.isEmpty {
             parameters["note"] = note
         }
-        if let label, !label.isEmpty {
+        if let label {//, !label.isEmpty {
             parameters["label"] = label
         }
 
